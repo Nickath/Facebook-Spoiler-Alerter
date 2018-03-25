@@ -1,0 +1,20 @@
+{
+  "name": "Block facebook content",
+  "description": "Block unwanted content on facebook",
+  "version": "1",
+  "manifest_version": 2,
+  /*Content scripts are JavaScript files that run in the context of web pages */
+  "content_scripts": [
+    {
+	/* Required. Specifies which pages this content script will be injected into*/
+      "matches": [
+
+         "https://www.facebook.com/*"
+       ],
+       "js": [
+        "script.js"
+      ]
+    }
+
+  ]
+}
