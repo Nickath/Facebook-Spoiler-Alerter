@@ -1,8 +1,9 @@
 
 
 const spoilers = [
-     'Καληνύχτα','Stark', 'Khaleesi', 'Targaryen', 'GOT', 'Game Of Thrones', 'Ned Stark', 'Tyrion', 'Lannisters','smartest','AEK', '1821', 'πρωτάθλημα'
+     'Καληνύχτα','Stark', 'Khaleesi', 'Targaryen', 'GOT', 'Game Of Thrones', 'Ned Stark', 'Tyrion', 'Lannisters','smartest','AEK', '1821', 'πρωτάθλημα', 'Offside', 'αγώνας'
 ]
+
 
 const spoilersRegex = new RegExp(spoilers.join('|'),'i') /* creation of incase sensitive regex of the spoilers array */
   /* while the element does not include the classname userContentWrapper 
@@ -27,28 +28,26 @@ const spoilersRegex = new RegExp(spoilers.join('|'),'i') /* creation of incase s
 			 
 			 /* to close all the div call the closest function*/
 			 let parentElement =  closest(element,'userContentWrapper')
-			 
+			 const originalPost = parentElement;
 			 element.classList.add('spoiled') /* adds to the div element the class .spoiled */
 
 			 /*span creation with text and style*/
 			 const newElement = document.createElement('span')
-			 newElement.innerText = 'Ooops! Game of thrones Spoiler Alert (clicke here to open)'
+			 newElement.innerText = 'Ooops! Game of thrones Spoiler Alert (click here to open)'
 			 newElement.style = 'font-size: 30px;'
-			 
-			 
-			 /*replace the div of the spoil with the upper span */
+			 const originalPostWithReHide = parentElement;
+			 originalPostWithReHide.innerHTML = parentElement.innerHTML + "<strong> <span style='font-size: 25px;'>      Hide the spoil again</span>       </strong>"
+			 /*replace the div of the spoil post with the upper span */
 			 parentElement.replaceWith(newElement)
-			 const reShow = parentElement /* assign the parentElement to reShow const p*/
-			 
+
 			 /* when the click button is hit on the span, replace the span with the original post*/
 			 newElement.addEventListener('click', function(event) {
-				 reShow.innerHTML += "<strong> <span style='font-size: 25px;'>       Hide the spoil again</span>       </strong>"
-				 event.target.replaceWith(reShow)
+				 event.target.replaceWith(originalPostWithReHide) //replace the 'Oops div with the original post and a span to re-hide
 			 })
 			 
 			 /* hide again the div and put the newElement (spoil span)*/
-			  reShow.addEventListener('click', function(event) {
-				 event.target.replaceWith(newElement)
+			  originalPostWithReHide.addEventListener('click', function(event) {
+				 originalPostWithReHide.replaceWith(newElement);
 			 })
 			 
 		

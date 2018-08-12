@@ -3,18 +3,38 @@
   "description": "Block unwanted content on facebook",
   "version": "1",
   "manifest_version": 2,
+   "background": {
+        "scripts": ["background.js"],
+		"persistent": true
+         
+         
+ 
+       },
+	   "browser_action":   {
+                            "default_icon": {
+                            "38": "icon.png"
+                            },
+                 /*           "default_popup" :   "localpage.html",   */
+                            "default_title" :   "localpage title"
+                        },
   /*Content scripts are JavaScript files that run in the context of web pages */
   "content_scripts": [
     {
 	/* Required. Specifies which pages this content script will be injected into*/
       "matches": [
-
          "https://www.facebook.com/*"
        ],
+	   
+	  
        "js": [
         "script.js"
       ]
+	  
     }
 
   ]
+ 
+
+  
+  
 }
