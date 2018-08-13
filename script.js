@@ -1,10 +1,17 @@
 
-const spoilers = [
+let spoilers = [
      'Καληνύχτα','Stark', 'Khaleesi', 'Targaryen', 'GOT', 'Game Of Thrones', 'Ned Stark', 'Tyrion', 'Lannisters','smartest','AEK', '1821', 'πρωτάθλημα', 'Offside', 'αγώνας'
 ]
 
- 
-const spoilersRegex = new RegExp(spoilers.join('|'),'i') /* creation of incase sensitive regex of the spoilers array */
+//store to the spoilers table the value from chrome.storage
+chrome.storage.sync.get('spoiler_list', function(data){
+   spoilers = data.spoiler_list;
+});	
+
+
+
+let spoilersRegex = new RegExp(spoilers.join('|'),'i') /* creation of incase sensitive regex of the spoilers array */
+
   /* while the element does not include the classname userContentWrapper 
   assign element to parentNode */
   function closest(element, className){
@@ -57,24 +64,8 @@ const spoilersRegex = new RegExp(spoilers.join('|'),'i') /* creation of incase s
 }
 
 
-  // function storageFun(spoilerWords){
-	   // //set value to the chrome storage
-  // chrome.storage.sync.set({'spoilerWords' : spoilerWords }, function(){
-
-  // });
-  // //get the value from chrome storage
-  // chrome.storage.sync.get('spoilerWords', function(data){
-       // for(var i = 0; i < data.spoilerWords.length; i++){
-		   // alert(data.spoilerWords[i]);
-	   // }
-  // });
-
-	  
-	  
-  }
    /*Execute a JavaScript immediately after a page has been loaded: */
    window.onload = function() {
-	   storageFun()
 	   blockSpoil()
 	   /* in order to call the function when scrolling event is happening again*/
 	   window.addEventListener('scroll',blockSpoil)

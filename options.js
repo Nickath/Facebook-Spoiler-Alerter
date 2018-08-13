@@ -1,6 +1,6 @@
 // Saves options to chrome.storage
 
-let  default_spoilers = [
+let default_spoilers = [
      'Stark', 'Khaleesi', 'Targaryen', 'GOT', 'Game Of Thrones', 'Ned Stark', 'Tyrion', 'Lannisters'
 ]
 
