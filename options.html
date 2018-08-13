@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Spoiler Alert Blocker</title>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'sha256-WOdSzz11/3cpqOdrm89LBL2UPwEU9EhbDtMy2OciEhs='">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="bootstrap.min.css">
+</head>
+<body>
+
+
+<div class="container">
+  <h2>Add words you would not like to see </h2>
+    <div class="form-group">
+      <label for="words">Add words comma separated </label>
+      <input type="text" class="form-control" id="words" placeholder="Enter words" name="words">
+    </div>
+ 
+    <div class="checkbox">
+      <label><input type="checkbox" name="remember"> Remember me</label>
+    </div>
+    <button type="submit" id="sbmtID" class="btn btn-default">Submit</button>
+	
+	<div id="status"></div>
+</div>
+
+</body>
+
+<script src="options.js"> </script>
+<script src="jquery.min.js"> </script>
+<script src="bootstrap.min.js"> </script>
+
+
+</html>

@@ -3,19 +3,24 @@
   "description": "Block unwanted content on facebook",
   "version": "1",
   "manifest_version": 2,
+  "minimum_chrome_version": "46",
+  "content_security_policy": "script-src 'self' 'sha256-WOdSzz11/3cpqOdrm89LBL2UPwEU9EhbDtMy2OciEhs='",
+  "options_page": "options.html",
+  "permissions": [
+    "storage",
+	"tabs"
+  ],
    "background": {
         "scripts": ["background.js"],
 		"persistent": true
-         
-         
- 
+
        },
 	   "browser_action":   {
                             "default_icon": {
                             "38": "icon.png"
                             },
-                 /*           "default_popup" :   "localpage.html",   */
-                            "default_title" :   "localpage title"
+                            //"default_popup" :   "localpage.html",   
+                            "default_title" :   "Block facebook unwanted content"
                         },
   /*Content scripts are JavaScript files that run in the context of web pages */
   "content_scripts": [
@@ -24,11 +29,13 @@
       "matches": [
          "https://www.facebook.com/*"
        ],
-	   
 	  
        "js": [
-        "script.js"
-      ]
+        "script.js", "jquery.min.js", "bootstrap.min.js"
+      ],
+	   "css": [
+	     "bootstrap.min.css"
+	   ]
 	  
     }
 
