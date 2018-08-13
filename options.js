@@ -19,6 +19,8 @@ function save_options() {
       status.textContent = '';
     }, 750);
   });
+  eraseTable();//in every change first erase the table and then add the contents
+  createTableOfWords();
 }
 
 
@@ -46,6 +48,8 @@ function restore_options() {
 	   }
   });
   
+  createTableOfWords();
+  
   
   
 }
@@ -67,4 +71,27 @@ function addDefaultOptions(){
   }, function() {
 
   });
+}
+
+
+
+function createTableOfWords(){
+	chrome.storage.sync.get('spoiler_list', function(data){
+    var words = data.spoiler_list.split(",");
+	var table = document.getElementById('wordTable');
+	var arrayLength = words.length;
+    for (var i = 0; i < arrayLength; i++) {
+         var row = table.insertRow((i+1));
+		 var cell = row.insertCell(0);
+		 cell.innerHTML = (i+1) + ") "+words[i];
+    }
+});	
+}
+
+function eraseTable(){
+	 var table = document.getElementById('wordTable');
+     for(var i = table.rows.length; i > 1;i--)
+     {
+      table.deleteRow(i -1);
+     }
 }

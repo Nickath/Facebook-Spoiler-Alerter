@@ -6,6 +6,15 @@
   <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'sha256-WOdSzz11/3cpqOdrm89LBL2UPwEU9EhbDtMy2OciEhs='">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="bootstrap.min.css">
+  
+  <style>
+  .wordsDiv{
+   position: absolute;
+   bottom: 200px;
+  }
+  
+  </style>
+  
 </head>
 <body>
 
@@ -17,12 +26,22 @@
       <input type="text" class="form-control" id="words" placeholder="Enter words" name="words">
     </div>
  
-    <div class="checkbox">
+    <!-- <div class="checkbox">
       <label><input type="checkbox" name="remember"> Remember me</label>
-    </div>
-    <button type="submit" id="sbmtID" class="btn btn-default">Submit</button>
+    </div> -->
+    <button type="submit" id="sbmtID" class="btn btn-default">Save</button>
 	
 	<div id="status"></div>
+	
+	<div class="wordsDiv"> 
+	 <table id ="wordTable">
+	  <tr>
+	   <th>
+	    Blocked words
+	   </th>
+	  </tr>
+	 </table>
+	</div>
 </div>
 
 </body>
