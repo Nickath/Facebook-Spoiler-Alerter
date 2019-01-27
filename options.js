@@ -5,7 +5,6 @@ let default_spoilers = [
 ]
 
 function save_options() {
-  alert('fsdfds');
   var spoiler_list = document.getElementById('words').value;
    if(spoiler_list != 'undefined'){
 	  var spoilers = spoiler_list.split(",");
@@ -56,6 +55,12 @@ function restore_options() {
 document.addEventListener('DOMContentLoaded', restore_options);//call the restore_options when the page is rendered which has binded the already set values
 document.getElementById('sbmtID').addEventListener('click',
     save_options);//onclick of the submit button call the save_options function
+
+document.getElementById('eraseID').addEventListener('click',
+    clearWords);
+
+
+
 	
 
 chrome.storage.sync.get('spoiler_list', function(data){
@@ -94,4 +99,24 @@ function eraseTable(){
      {
       table.deleteRow(i -1);
      }
+}
+
+
+function clearWords(){
+  chrome.storage.sync.set({
+    spoiler_list: '',
+    }, function() {
+      // Update status to let user know options were saved.
+      var status = document.getElementById('status');
+      status.textContent = 'Options cleared.';
+      setTimeout(function() {
+        status.textContent = '';
+      }, 750);
+    });
+    eraseTable();
+    clearListLabel();
+}
+
+function clearListLabel(){
+  document.getElementById('words').value = '';
 }
