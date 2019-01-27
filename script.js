@@ -1,16 +1,34 @@
 
 let spoilers = [
-     'Καληνύχτα','Stark', 'Khaleesi', 'Targaryen', 'GOT', 'Game Of Thrones', 'Ned Stark', 'Tyrion', 'Lannisters','smartest','AEK', '1821', 'πρωτάθλημα', 'Offside', 'αγώνας'
+     'μας','Καληνύχτα','Stark', 'Khaleesi', 'Targaryen', 'GOT', 'Game Of Thrones', 'Ned Stark', 'Tyrion', 'Lannisters','smartest','AEK', '1821', 'πρωτάθλημα', 'Offside', 'αγώνας'
 ]
+let spoilersRegex;
 
 //store to the spoilers table the value from chrome.storage
 chrome.storage.sync.get('spoiler_list', function(data){
-   spoilers = data.spoiler_list;
+   if(data.spoiler_list != null && data.spoiler_list != ''){
+	  spoilers = data.spoiler_list.split(','); //convert the spoiler_list to array and assign it to the 
+   }
+   else{
+	   //else apply the default spoilers in the upper array
+   }
 });	
 
+function updateSpoilerList(){
+	//store to the spoilers table the value from chrome.storage
+chrome.storage.sync.get('spoiler_list', function(data){
+	if(data.spoiler_list != null && data.spoiler_list != ''){
+	   spoilers = data.spoiler_list.split(','); //convert the spoiler_list to array and assign it to the 
+	}
+	else{
+		//else apply the default spoilers in the upper array
+	}
+ });	
+}
 
 
-let spoilersRegex = new RegExp(spoilers.join('|'),'i') /* creation of incase sensitive regex of the spoilers array */
+
+  spoilersRegex = new RegExp(spoilers.join('|'),'i') /* creation of incase sensitive regex of the spoilers array */
 
   /* while the element does not include the classname userContentWrapper 
   assign element to parentNode */
@@ -22,7 +40,6 @@ let spoilersRegex = new RegExp(spoilers.join('|'),'i') /* creation of incase sen
   }
   
   function blockSpoil() {
- 
 	  /* the div class of every facebook post*/
      const elementsFB = ['.userContent']
      /* get all divs containing the class .userContent */
@@ -63,9 +80,9 @@ let spoilersRegex = new RegExp(spoilers.join('|'),'i') /* creation of incase sen
 
 }
 
-
    /*Execute a JavaScript immediately after a page has been loaded: */
    window.onload = function() {
+	   spoilersRegex = new RegExp(spoilers.join('|'),'i') /* creation of incase sensitive regex of the spoilers array */
 	   blockSpoil()
 	   /* in order to call the function when scrolling event is happening again*/
 	   window.addEventListener('scroll',blockSpoil)

@@ -26,8 +26,7 @@ function save_options() {
 
 
 
-// Restores the set values
-// stored in chrome.storage.
+// Restores the set values stored in chrome.storage.
 //if the spoiler_list is not found in the chrome storage, put the default, else, store the one that was previous stored
 //if the user submits new data, store them
 function restore_options() {
@@ -77,11 +76,11 @@ function addDefaultOptions(){
 
 function createTableOfWords(){
 	chrome.storage.sync.get('spoiler_list', function(data){
-    var words = data.spoiler_list.split(",");
+  var words = data.spoiler_list.split(",");
 	var table = document.getElementById('wordTable');
 	var arrayLength = words.length;
     for (var i = 0; i < arrayLength; i++) {
-         var row = table.insertRow((i+1));
+     var row = table.insertRow((i+1));
 		 var cell = row.insertCell(0);
 		 cell.innerHTML = (i+1) + ") "+words[i];
     }
