@@ -5,6 +5,7 @@ let default_spoilers = [
 ]
 
 function save_options() {
+  alert('fsdfds');
   var spoiler_list = document.getElementById('words').value;
    if(spoiler_list != 'undefined'){
 	  var spoilers = spoiler_list.split(",");
