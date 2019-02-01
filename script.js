@@ -42,27 +42,42 @@ chrome.storage.sync.get('spoiler_list', function(data){
 
   function findEmbeddedLinks(){
 	  //var matches = elementsFB.querySelectorAll("A"); //to query by element tag
-	 var parentOfLinksCollection = document.getElementsByClassName("_3ekx _29_4");
-	 var arrayOfCollectionLinks = Array.from(parentOfLinksCollection);
+	 var parentDivsOfPostLinks = document.getElementsByClassName("_6ks");
+	 var arrayOfparentDivsOfPostLinks = Array.from(parentDivsOfPostLinks);
+     for(var j = 0; j < arrayOfparentDivsOfPostLinks.length; j++){
+		var links = arrayOfparentDivsOfPostLinks[j].querySelectorAll("A");
+		for (var index = 0; index < links.length; index++) {
+		   //decode the url to hit it 
+		   var fixedLink = fixLink(links[index]);
+		   var linkResponse = httpGet(fixedLink);
+	   }
+	 }
+	 
+  }
 
-	 var links = arrayOfCollectionLinks[0].querySelectorAll("A");
-	 for (var index = 0; index < links.length; index++) {
-		//alert(links[index]);
-		console.log(links[index]);
-		var linkResponse = httpGet(links[index]);
-		alert('Link response is ' + linkResponse);
-	}
+  function fixLink(link){
+	var decodedLink = decodeURIComponent(link);
+	var stringToStrip = "https://l.facebook.com/l.php?u=";
+	var actualLink = decodedLink.substring(stringToStrip.length,decodedLink.length);
+    return actualLink;
   }
 
   function httpGet(theUrl)
   {
 	  var xmlHttp = new XMLHttpRequest();
 	  xmlHttp.open( "GET", theUrl, true ); // false for synchronous request
-	  xmlHttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-	  xmlHttp.send( null );
-	  xmlHttp.onload = function() {
-		console.log(xmlHttp.responseText);
-	  };
+	 // xmlHttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+	   xmlHttp.onreadystatechange = function() { 
+		if (xmlHttp.readyState == 4) {
+		   var linkedPageTitleMatcher = (/<title>(.*?)<\/title>/m).exec(xmlHttp.responseText); 
+		   if(linkedPageTitleMatcher != null && linkedPageTitleMatcher != undefined){
+			   var title = linkedPageTitleMatcher[1];
+			   alert(title);
+		   }
+		}
+	  }
+	  xmlHttp.send();
+	
 	  return xmlHttp.responseText;
   }
 
@@ -121,5 +136,6 @@ chrome.storage.sync.get('spoiler_list', function(data){
 	   blockSpoil()
 	   /* in order to call the function when scrolling event is happening again*/
 	   window.addEventListener('scroll',blockSpoil)
+	   window.addEventListener('scroll',findEmbeddedLinks);
    }
    
