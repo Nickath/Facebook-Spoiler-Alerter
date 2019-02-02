@@ -150,14 +150,30 @@ chrome.storage.sync.get('spoiler_list', function(data){
 
 }
 
+function blockSpoilByImages(){
+	const elementsWithImages = ['.uiScaledImageContainer'];
+	const elements = document.querySelectorAll(elementsWithImages);
+	elements.forEach(function(element){
+		 var images = element.getElementsByTagName('img');
+		 imageNodes = Array.prototype.slice.call(images,0); 
+		 imageNodes.forEach(function(image){
+			 var imageLink = image.src;
+			 alert(imageLink);
+		 })
+	     console.log(element);
+	})
+}
+
    /*Execute a JavaScript immediately after a page has been loaded: */
    window.onload = function() {
 	   spoilersRegex = new RegExp(spoilers.join('|'),'i') /* creation of incase sensitive regex of the spoilers array */
 	   //find spoiled links
 	   blockEmbeddedLinks();
+	   blockSpoilByImages();
 	   blockSpoilByKeyWords()
 	   /* in order to call the function when scrolling event is happening again*/
 	   window.addEventListener('scroll',blockSpoilByKeyWords)
 	   window.addEventListener('scroll',blockEmbeddedLinks);
+	   window.addEventListener('scroll',blockSpoilByImages);
    }
    
