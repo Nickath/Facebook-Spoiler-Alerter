@@ -57,6 +57,7 @@ chrome.storage.sync.get('spoiler_list', function(data){
 		   var fixedLink = fixLink(links[index]);
 		   httpGet(fixedLink, function(responseText) {
 		   var title = retrievePageTitle(responseText);
+		   //alert(title);
 		   var header = retrievePageHeader(responseText);
 		   if(!parentElementOfLink.classList.contains('spoiled') && (title.match(spoilersRegex) !== null || header.match(spoilersRegex)) ) {
 				checkAndBlock(parentElementOfLink);
