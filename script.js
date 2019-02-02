@@ -2,6 +2,7 @@
 let spoilers = [
      'μας','Καληνύχτα','Stark', 'Khaleesi', 'Targaryen', 'GOT', 'Game Of Thrones', 'Ned Stark', 'Tyrion', 'Lannisters','smartest','AEK', '1821', 'πρωτάθλημα', 'Offside', 'αγώνας'
 ]
+
 let spoilersRegex;
 
 //store to the spoilers table the value from chrome.storage
@@ -46,20 +47,23 @@ chrome.storage.sync.get('spoiler_list', function(data){
 	 var arrayOfparentDivsOfPostLinks = Array.from(parentDivsOfPostLinks);
      for(var j = 0; j < arrayOfparentDivsOfPostLinks.length; j++){
 		let parentElementOfLink =  closest(arrayOfparentDivsOfPostLinks[j],'userContentWrapper');
+		if(parentElementOfLink.classList.contains('checked')){
+			continue;
+		}
 		console.log(parentElementOfLink);
 		var links = arrayOfparentDivsOfPostLinks[j].querySelectorAll("A");
 		for (var index = 0; index < links.length; index++) {
 		   //decode/fix the url to hit it 
 		   var fixedLink = fixLink(links[index]);
 		   httpGet(fixedLink, function(responseText) {
-			var title = retrievePageTitle(responseText);
-			var header = retrievePageHeader(responseText);
-			alert(title);
-			if(!parentElementOfLink.classList.contains('spoiled') && (title.match(spoilersRegex) !== null || header.match(spoilersRegex)) ) {
+		   var title = retrievePageTitle(responseText);
+		   var header = retrievePageHeader(responseText);
+		   if(!parentElementOfLink.classList.contains('spoiled') && (title.match(spoilersRegex) !== null || header.match(spoilersRegex)) ) {
 				checkAndBlock(parentElementOfLink);
 			}
 		   });
-
+		   //add a checked class in the parent element so that we will not check ever again for this link
+		   parentElementOfLink.classList.add('checked');
 	   }
 	 }
 	 
