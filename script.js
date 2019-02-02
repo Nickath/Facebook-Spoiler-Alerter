@@ -45,11 +45,39 @@ chrome.storage.sync.get('spoiler_list', function(data){
 	 var parentDivsOfPostLinks = document.getElementsByClassName("_6ks");
 	 var arrayOfparentDivsOfPostLinks = Array.from(parentDivsOfPostLinks);
      for(var j = 0; j < arrayOfparentDivsOfPostLinks.length; j++){
+		let parentElementOfLink =  closest(arrayOfparentDivsOfPostLinks[j],'userContentWrapper');
+		console.log(parentElementOfLink);
 		var links = arrayOfparentDivsOfPostLinks[j].querySelectorAll("A");
 		for (var index = 0; index < links.length; index++) {
-		   //decode the url to hit it 
+		   //decode/fix the url to hit it 
 		   var fixedLink = fixLink(links[index]);
-		   var linkResponse = httpGet(fixedLink);
+		   httpGet(fixedLink, function(responseText) {
+			var title = retrievePageTitle(responseText);
+			var header = retrievePageHeader(responseText);
+			if(!parentElementOfLink.classList.contains('spoiled') && (title.match(spoilersRegex) !== null || header.match(spoilersRegex)) ) {
+				parentElementOfLink.classList.add('spoiled') /* adds to the div element the class .spoiled */
+				const newElement = document.createElement('span')
+				newElement.innerText = 'Ooops! Game of thrones Spoiler Alert (click here to open)'
+				newElement.style = 'font-size: 30px;'
+				const originalPostWithReHide = parentElement;
+				originalPostWithReHide.innerHTML = parentElement.innerHTML + "<strong> <span style='font-size: 25px;'>      Hide the spoil again</span>       </strong>"
+				/*replace the div of the spoil post with the upper span */
+				parentElement.replaceWith(newElement)
+   
+				/* when the click button is hit on the span, replace the span with the original post*/
+				newElement.addEventListener('click', function(event) {
+					event.target.replaceWith(originalPostWithReHide) //replace the 'Oops div with the original post and a span to re-hide
+				})
+				
+				/* hide again the div and put the newElement (spoil span)*/
+				 originalPostWithReHide.addEventListener('click', function(event) {
+					originalPostWithReHide.replaceWith(newElement);
+				})
+				
+		   
+			}
+		   });
+
 	   }
 	 }
 	 
@@ -62,30 +90,43 @@ chrome.storage.sync.get('spoiler_list', function(data){
     return actualLink;
   }
 
-  function httpGet(theUrl)
+  function retrievePageTitle(response){
+	var linkedPageTitleMatcher = (/<title>(.*?)<\/title>/m).exec(response); 
+	if(linkedPageTitleMatcher != null && linkedPageTitleMatcher != undefined){
+		var title = linkedPageTitleMatcher[1];
+		return title;
+    }
+		return "";
+  }
+
+  function retrievePageHeader(response){
+	var linkedPageHeaderMatcher = (/<h1(.*?)<\/h1>/m).exec(response); 
+	if(linkedPageHeaderMatcher != null && linkedPageHeaderMatcher != undefined){
+		var header = linkedPageHeaderMatcher[1];
+		return header;
+    }
+		return "";
+  }
+
+
+  function httpGet(theUrl, resp)
   {
 	  var xmlHttp = new XMLHttpRequest();
 	  xmlHttp.open( "GET", theUrl, true ); // false for synchronous request
 	 // xmlHttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-	   xmlHttp.onreadystatechange = function() { 
-		if (xmlHttp.readyState == 4) {
-		   var linkedPageTitleMatcher = (/<title>(.*?)<\/title>/m).exec(xmlHttp.responseText); 
-		   if(linkedPageTitleMatcher != null && linkedPageTitleMatcher != undefined){
-			   var title = linkedPageTitleMatcher[1];
-			   alert(title);
+	  xmlHttp.onreadystatechange = function() { 
+		if (xmlHttp.readyState == 4 && xmlHttp.status == "200") {
+			 resp(xmlHttp.response);
 		   }
 		}
-	  }
 	  xmlHttp.send();
-	
-	  return xmlHttp.responseText;
   }
+  
 
 
   
-  function blockSpoil() {
+  function blockSpoilByKeyWords() {
 
-	 
 	  /* the div class of every facebook post*/
      const elementsFB = ['.userContent']
      /* get all divs containing the class .userContent */
@@ -132,8 +173,7 @@ chrome.storage.sync.get('spoiler_list', function(data){
 	   spoilersRegex = new RegExp(spoilers.join('|'),'i') /* creation of incase sensitive regex of the spoilers array */
 	   //find spoiled links
 	   findEmbeddedLinks();
-
-	   blockSpoil()
+	   blockSpoilByKeyWords()
 	   /* in order to call the function when scrolling event is happening again*/
 	   window.addEventListener('scroll',blockSpoil)
 	   window.addEventListener('scroll',findEmbeddedLinks);
