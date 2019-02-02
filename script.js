@@ -40,7 +40,7 @@ chrome.storage.sync.get('spoiler_list', function(data){
   }
 
 
-  function findEmbeddedLinks(){
+  function blockEmbeddedLinks(){
 	  //var matches = elementsFB.querySelectorAll("A"); //to query by element tag
 	 var parentDivsOfPostLinks = document.getElementsByClassName("_6ks");
 	 var arrayOfparentDivsOfPostLinks = Array.from(parentDivsOfPostLinks);
@@ -54,27 +54,9 @@ chrome.storage.sync.get('spoiler_list', function(data){
 		   httpGet(fixedLink, function(responseText) {
 			var title = retrievePageTitle(responseText);
 			var header = retrievePageHeader(responseText);
+			alert(title);
 			if(!parentElementOfLink.classList.contains('spoiled') && (title.match(spoilersRegex) !== null || header.match(spoilersRegex)) ) {
-				parentElementOfLink.classList.add('spoiled') /* adds to the div element the class .spoiled */
-				const newElement = document.createElement('span')
-				newElement.innerText = 'Ooops! Game of thrones Spoiler Alert (click here to open)'
-				newElement.style = 'font-size: 30px;'
-				const originalPostWithReHide = parentElement;
-				originalPostWithReHide.innerHTML = parentElement.innerHTML + "<strong> <span style='font-size: 25px;'>      Hide the spoil again</span>       </strong>"
-				/*replace the div of the spoil post with the upper span */
-				parentElement.replaceWith(newElement)
-   
-				/* when the click button is hit on the span, replace the span with the original post*/
-				newElement.addEventListener('click', function(event) {
-					event.target.replaceWith(originalPostWithReHide) //replace the 'Oops div with the original post and a span to re-hide
-				})
-				
-				/* hide again the div and put the newElement (spoil span)*/
-				 originalPostWithReHide.addEventListener('click', function(event) {
-					originalPostWithReHide.replaceWith(newElement);
-				})
-				
-		   
+				checkAndBlock(parentElementOfLink);
 			}
 		   });
 
@@ -121,49 +103,44 @@ chrome.storage.sync.get('spoiler_list', function(data){
 		}
 	  xmlHttp.send();
   }
-  
+
+  function checkAndBlock(element){
+	if(!element.classList.contains('spoiled') && element.innerText.match(spoilersRegex) !== null) {
+		console.log(element)
+		//var matches = myBox.querySelectorAll("p"); to query by element tag
+		/* to close all the div call the closest function*/
+		let parentElement =  closest(element,'userContentWrapper')
+		const originalPost = parentElement;
+		element.classList.add('spoiled') /* adds to the div element the class .spoiled */
+		/*span creation with text and style*/
+		const newElement = document.createElement('span')
+		newElement.innerText = 'Ooops! Game of thrones Spoiler Alert (click here to open)'
+		newElement.style = 'font-size: 30px;'
+		const originalPostWithReHide = parentElement;
+		originalPostWithReHide.innerHTML = parentElement.innerHTML + "<strong> <span style='font-size: 25px;'>      Hide the spoil again</span>       </strong>"
+		/*replace the div of the spoil post with the upper span */
+		parentElement.replaceWith(newElement)
+		/* when the click button is hit on the span, replace the span with the original post*/
+		newElement.addEventListener('click', function(event) {
+			event.target.replaceWith(originalPostWithReHide) //replace the 'Oops div with the original post and a span to re-hide
+		})
+		/* hide again the div and put the newElement (spoil span)*/
+		 originalPostWithReHide.addEventListener('click', function(event) {
+			originalPostWithReHide.replaceWith(newElement);
+		})
+	}
+  }
 
 
   
   function blockSpoilByKeyWords() {
-
 	  /* the div class of every facebook post*/
      const elementsFB = ['.userContent']
      /* get all divs containing the class .userContent */
 	 const elements = document.querySelectorAll(elementsFB)
-
 	 /* iterate through the elements that contain text from the spoilersRegex*/
      elements.forEach(function(element){
-		 if(!element.classList.contains('spoiled') && element.innerText.match(spoilersRegex) !== null) {
-			 console.log(element)
-			 //var matches = myBox.querySelectorAll("p"); to query by element tag
-			
-			 /* to close all the div call the closest function*/
-			 let parentElement =  closest(element,'userContentWrapper')
-			 const originalPost = parentElement;
-			 element.classList.add('spoiled') /* adds to the div element the class .spoiled */
-
-			 /*span creation with text and style*/
-			 const newElement = document.createElement('span')
-			 newElement.innerText = 'Ooops! Game of thrones Spoiler Alert (click here to open)'
-			 newElement.style = 'font-size: 30px;'
-			 const originalPostWithReHide = parentElement;
-			 originalPostWithReHide.innerHTML = parentElement.innerHTML + "<strong> <span style='font-size: 25px;'>      Hide the spoil again</span>       </strong>"
-			 /*replace the div of the spoil post with the upper span */
-			 parentElement.replaceWith(newElement)
-
-			 /* when the click button is hit on the span, replace the span with the original post*/
-			 newElement.addEventListener('click', function(event) {
-				 event.target.replaceWith(originalPostWithReHide) //replace the 'Oops div with the original post and a span to re-hide
-			 })
-			 
-			 /* hide again the div and put the newElement (spoil span)*/
-			  originalPostWithReHide.addEventListener('click', function(event) {
-				 originalPostWithReHide.replaceWith(newElement);
-			 })
-			 
-		
-		 }
+		 checkAndBlock(element)
 	 })
 
 }
@@ -172,10 +149,10 @@ chrome.storage.sync.get('spoiler_list', function(data){
    window.onload = function() {
 	   spoilersRegex = new RegExp(spoilers.join('|'),'i') /* creation of incase sensitive regex of the spoilers array */
 	   //find spoiled links
-	   findEmbeddedLinks();
+	   blockEmbeddedLinks();
 	   blockSpoilByKeyWords()
 	   /* in order to call the function when scrolling event is happening again*/
-	   window.addEventListener('scroll',blockSpoil)
-	   window.addEventListener('scroll',findEmbeddedLinks);
+	   window.addEventListener('scroll',blockSpoilByKeyWords)
+	   window.addEventListener('scroll',blockEmbeddedLinks);
    }
    
