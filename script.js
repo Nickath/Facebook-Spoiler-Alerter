@@ -157,7 +157,12 @@ function blockSpoilByImages(){
 		 var images = element.getElementsByTagName('img');
 		 imageNodes = Array.prototype.slice.call(images,0); 
 		 imageNodes.forEach(function(image){
+			 let parentElementOfImage =  closest(image,'userContentWrapper');
+			 if(parentElementOfImage.classList.contains('checked')){
+				 continue;
+			 }
 			 var imageLink = image.src;
+			 parentElementOfImage.classList.add('checked');
 			 alert(imageLink);
 		 })
 	     console.log(element);
