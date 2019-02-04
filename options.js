@@ -91,6 +91,10 @@ document.getElementById('sbmtID').addEventListener('click',
     save_options);//onclick of the submit button call the save_options function
 // document.getElementById('sbmtID').addEventListener('click',
 //     createInputFields);
+Array.prototype.forEach.call(
+  document.querySelectorAll('[id^=deleteWord_]'), function(e) {
+  e.addEventListener('click', removeCell);
+});
 document.getElementById('eraseID').addEventListener('click',
     clearWords);
 
@@ -104,6 +108,11 @@ chrome.storage.sync.get('spoiler_list', function(data){
          addDefaultOptions();
     }
 });	
+
+
+function removeCell(){
+  alert('removecell');
+}
 	
 
 function addDefaultOptions(){
@@ -123,8 +132,10 @@ function createTableOfWords(){
 	var arrayLength = words.length;
     for (var i = 0; i < arrayLength; i++) {
      var row = table.insertRow((i+1));
-		 var cell = row.insertCell(0);
-		 cell.innerHTML = (i+1) + ") "+words[i];
+     var cell = row.insertCell(0);
+     var deleteCell = row.insertCell(1);
+     cell.innerHTML = (i+1) + ") "+words[i];
+     deleteCell.innerHTML = '<span id="deleteWord_'+(i+1) + '"> delete </span>';
     }
 });	
 }
