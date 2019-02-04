@@ -5,9 +5,22 @@ let default_spoilers = [
 ]
 
 function save_options() {
-  var spoiler_list = document.getElementById('words').value;
+  var spoiler_list_input = document.getElementById('words');
+  var children = spoiler_list_input.children;
+  var spoiler_list = '';
+  for (var i = 0; i < children.length; i++) {
+  var tableChild = children[i];
+  if(i == children.length -1 ){
+    spoiler_list += tableChild.innerHTML;
+  }
+  else{
+    spoiler_list += tableChild.innerHTML +',';
+  }
+  }
+  
+ // alert(spoiler_list);
    if(spoiler_list != 'undefined'){
-	  var spoilers = spoiler_list.split(",");
+	  spoilers = spoiler_list.split(",");
    }
   chrome.storage.sync.set({
   spoiler_list: spoiler_list,
@@ -21,6 +34,27 @@ function save_options() {
   });
   eraseTable();//in every change first erase the table and then add the contents
   createTableOfWords();
+}
+
+function createInputFields(){
+  chrome.storage.sync.get('spoiler_list', function(data){
+    if (typeof data.spoiler_list === 'undefined') {
+        
+   }
+   else{
+      var words = data.spoiler_list.split(",");
+      alert(words.length);
+      words.forEach(word, i => {
+        var inputElement = document.createElement("INPUT");
+        inputElement.setAttribute("type", "text");
+        inputElement.id = 'words' + i;
+        inputElement.className = 'form-control';
+        inputElement.placeholder = 'Enter words';
+        inputElement.name = 'words';
+        document.getElementById('formOfWords').appendChild(inputElement);
+      });
+   }
+});	
 }
 
 
@@ -55,9 +89,11 @@ function restore_options() {
 document.addEventListener('DOMContentLoaded', restore_options);//call the restore_options when the page is rendered which has binded the already set values
 document.getElementById('sbmtID').addEventListener('click',
     save_options);//onclick of the submit button call the save_options function
-
+// document.getElementById('sbmtID').addEventListener('click',
+//     createInputFields);
 document.getElementById('eraseID').addEventListener('click',
     clearWords);
+
 
 
 
@@ -94,8 +130,8 @@ function createTableOfWords(){
 }
 
 function eraseTable(){
-	 var table = document.getElementById('wordTable');
-     for(var i = table.rows.length; i > 1;i--)
+     var table = document.getElementById('wordTable');
+     for(var i = table.rows.length; i > 1; i--)
      {
       table.deleteRow(i -1);
      }
@@ -118,5 +154,5 @@ function clearWords(){
 }
 
 function clearListLabel(){
-  document.getElementById('words').value = '';
+  document.getElementById('words').innerHTML = '';
 }
