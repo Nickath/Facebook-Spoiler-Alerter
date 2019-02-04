@@ -280,6 +280,37 @@ html, body, main {
       opacity: 0;
     }
   }
+
+  td {
+  height: 30px;
+  vertical-align: bottom;
+  border: 0.5px solid black;
+  padding: 5px 5px;
+  }
+
+  #sbmtID.button {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 10px 24px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+#eraseID.button {
+  background-color: #f44336;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  margin: 4px 10px;
+  cursor: pointer;
+}
   </style>
   
 </head>
@@ -290,14 +321,14 @@ html, body, main {
   <p>Add words you would not like to see (comma separated)</p>
   <div class="tags-input" id="words"></div>
   <h1><span>Tags</span> Input</h1>
-  <button type="submit" id="sbmtID" class="btn btn-default">Save</button>
-  <button type="submit" id="eraseID" class="btn btn-default">Erase Words</button>
+  <button type="submit" id="sbmtID" class="button">Save</button>
+  <button type="submit" id="eraseID" class="button">Erase Words</button>
   <div id="status"></div>
 	
 	<div class="wordsDiv"> 
 	 <table id ="wordTable">
 	  <tr>
-	   <th>
+	   <th style="font-size:16px;">
 	    Blocked words
 	   </th>
 	  </tr>
