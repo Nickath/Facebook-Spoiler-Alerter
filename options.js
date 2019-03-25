@@ -82,13 +82,13 @@ function restore_options() {
   });
   
   createTableOfWords();
-  
-  
-  
+
 }
 document.addEventListener('DOMContentLoaded', restore_options);//call the restore_options when the page is rendered which has binded the already set values
 document.getElementById('sbmtID').addEventListener('click',
-    save_options);//onclick of the submit button call the save_options function
+    save_options);
+    
+    //onclick of the submit button call the save_options function
 // document.getElementById('sbmtID').addEventListener('click',
 //     createInputFields);
 Array.prototype.forEach.call(
@@ -135,9 +135,49 @@ function createTableOfWords(){
      var cell = row.insertCell(0);
      var deleteCell = row.insertCell(1);
      cell.innerHTML = (i+1) + ") "+words[i];
-     deleteCell.innerHTML = '<span id="deleteWord_'+(i+1) + '"> delete </span>';
+     deleteCell.innerHTML = '<span id="deleteWord_'+words[i]+'"> delete </span>';
+     deleteCell.addEventListener("click", function(){
+       removeWord(words[i]);
+    });
     }
 });	
+}
+
+function removeWord(wordName){
+  let newList = "";
+  chrome.storage.sync.get('spoiler_list', function(data){
+    let  words = data.spoiler_list.split(",");
+    let  positionOfWordInArray = isInArray(wordName, words);
+    if(positionOfWordInArray != -1){
+      words.splice(positionOfWordInArray, 1);
+      newList = words.join();
+      
+    }
+  });	
+
+  setTimeout(function() {
+    status.textContent = '';
+    chrome.storage.sync.set({
+      spoiler_list: newList,
+      }, function() {
+        // Update status to let user know options were saved.
+        var status = document.getElementById('status');
+        status.textContent = 'Options saved.';
+        setTimeout(function() {
+          status.textContent = '';
+        }, 250);
+      });
+      eraseTable();//in every change first erase the table and then add the contents
+      createTableOfWords();
+  }, 250);
+
+  
+  
+
+}
+
+function isInArray(value, array) {
+  return array.indexOf(value) > -1;
 }
 
 function eraseTable(){

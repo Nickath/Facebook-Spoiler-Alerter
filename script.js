@@ -1,3 +1,5 @@
+import 'babel-polyfill';
+import * as tf from '@tensorflow/tfjs';
 
 let spoilers = [
      'μας','Καληνύχτα','Stark', 'Khaleesi', 'Targaryen', 'GOT', 'Game Of Thrones', 'Ned Stark', 'Tyrion', 'Lannisters','smartest','AEK', '1821', 'πρωτάθλημα', 'Offside', 'αγώνας'
