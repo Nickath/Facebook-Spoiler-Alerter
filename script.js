@@ -1,5 +1,4 @@
-import 'babel-polyfill';
-import * as tf from '@tensorflow/tfjs';
+
 
 let spoilers = [
      'μας','Καληνύχτα','Stark', 'Khaleesi', 'Targaryen', 'GOT', 'Game Of Thrones', 'Ned Stark', 'Tyrion', 'Lannisters','smartest','AEK', '1821', 'πρωτάθλημα', 'Offside', 'αγώνας'
@@ -36,7 +35,7 @@ chrome.storage.sync.get('spoiler_list', function(data){
   /* while the element does not include the classname userContentWrapper 
   assign element to parentNode */
   function closest(element, className){
-	  while(!element.className.includes(className)){
+	  while(element.className != undefined && !element.className.includes(className)){
 		  element = element.parentNode
 	  }
 	  return element;
@@ -49,7 +48,8 @@ chrome.storage.sync.get('spoiler_list', function(data){
 	 var arrayOfparentDivsOfPostLinks = Array.from(parentDivsOfPostLinks);
      for(var j = 0; j < arrayOfparentDivsOfPostLinks.length; j++){
 		let parentElementOfLink =  closest(arrayOfparentDivsOfPostLinks[j],'userContentWrapper');
-		if(parentElementOfLink.classList.contains('checked')){
+		if(parentElementOfLink.classList != undefined &&
+			 parentElementOfLink.classList.contains('checked')){
 			continue;
 		}
 		console.log(parentElementOfLink);
@@ -59,14 +59,26 @@ chrome.storage.sync.get('spoiler_list', function(data){
 		   var fixedLink = fixLink(links[index]);
 		   httpGet(fixedLink, function(responseText) {
 		   var title = retrievePageTitle(responseText);
-		   //alert(title);
-		   var header = retrievePageHeader(responseText);
-		   if(!parentElementOfLink.classList.contains('spoiled') && (title.match(spoilersRegex) !== null || header.match(spoilersRegex)) ) {
-				checkAndBlock(parentElementOfLink);
+		   alert(title);
+			 var header = retrievePageHeader(responseText);
+			 var paragraphs = retrieveParagraphs(responseText);
+
+			 if(parentElementOfLink.classList != undefined){
+				if(!parentElementOfLink.classList.contains('spoiled') && (title.match(spoilersRegex) !== null || header.match(spoilersRegex)) ) {
+					checkAndBlock(parentElementOfLink);
+			 }
+			 for(let paragraph in paragraphs){
+				 if(!parentElementOfLink.classList.contains('spoiled') && paragraph.match(spoilersRegex) !== null){
+					checkAndBlock(parentElementOfLink);
+				 }
+			 }
+		   
 			}
 		   });
 		   //add a checked class in the parent element so that we will not check ever again for this link
-		   parentElementOfLink.classList.add('checked');
+		   if(parentElementOfLink.classList != undefined){
+				  parentElementOfLink.classList.add('checked');
+			 } 
 	   }
 	 }
 	 
@@ -95,7 +107,16 @@ chrome.storage.sync.get('spoiler_list', function(data){
 		return header;
     }
 		return "";
-  }
+	}
+	
+	function retrieveParagraphs(response){
+		var linkedPageParagraphMatcher =  (/<p(.*?)<\/p>/m).exec(response); 
+		if(linkedPageParagraphMatcher != null && linkedPageParagraphMatcher != undefined){
+			var paragraphs = linkedPageParagraphMatcher;
+			return paragraphs
+		}
+		return "";
+	}
 
 
   function httpGet(theUrl, resp)
@@ -159,11 +180,11 @@ function blockSpoilByImages(){
 		 var images = element.getElementsByTagName('img');
 		 imageNodes = Array.prototype.slice.call(images,0); 
 		 imageNodes.forEach(function(image){
-			 alert(image);
+			// alert(image);
 			 //let parentElementOfImage =  closest(image,'userContentWrapper');
 			 var imageLink = image.src;
 			 //parentElementOfImage.classList.add('checked');
-			 alert(imageLink);
+		//	 alert(imageLink);
 		 })
 	     console.log(element);
 	})
