@@ -1,8 +1,6 @@
 
 
-let spoilers = [
-     'μας','Καληνύχτα','Stark', 'Khaleesi', 'Targaryen', 'GOT', 'Game Of Thrones', 'Ned Stark', 'Tyrion', 'Lannisters','smartest','AEK', '1821', 'πρωτάθλημα', 'Offside', 'αγώνας'
-]
+let spoilers = []
 
 let spoilersRegex;
 
@@ -52,14 +50,14 @@ chrome.storage.sync.get('spoiler_list', function(data){
 			 parentElementOfLink.classList.contains('checked')){
 			continue;
 		}
-		console.log(parentElementOfLink);
+		//console.log(parentElementOfLink);
 		var links = arrayOfparentDivsOfPostLinks[j].querySelectorAll("A");
 		for (var index = 0; index < links.length; index++) {
 		   //decode/fix the url to hit it 
 		   var fixedLink = fixLink(links[index]);
 		   httpGet(fixedLink, function(responseText) {
 		   var title = retrievePageTitle(responseText);
-		   alert(title);
+		  // alert(title);
 			 var header = retrievePageHeader(responseText);
 			 var paragraphs = retrieveParagraphs(responseText);
 
@@ -134,7 +132,7 @@ chrome.storage.sync.get('spoiler_list', function(data){
 
   function checkAndBlock(element){
 	if(!element.classList.contains('spoiled') && element.innerText.match(spoilersRegex) !== null) {
-		console.log(element)
+		//console.log(element)
 		//var matches = myBox.querySelectorAll("p"); to query by element tag
 		/* to close all the div call the closest function*/
 		let parentElement =  closest(element,'userContentWrapper')
@@ -142,10 +140,15 @@ chrome.storage.sync.get('spoiler_list', function(data){
 		element.classList.add('spoiled') /* adds to the div element the class .spoiled */
 		/*span creation with text and style*/
 		const newElement = document.createElement('span')
-		newElement.innerText = 'Ooops! Game of thrones Spoiler Alert (click here to open)'
+		newElement.innerText = 'Spoiler Alert!!! (click here to open)'
 		newElement.style = 'font-size: 30px;'
 		const originalPostWithReHide = parentElement;
-		originalPostWithReHide.innerHTML = parentElement.innerHTML + "<strong> <span style='font-size: 25px;'>      Hide the spoil again</span>       </strong>"
+		originalPostWithReHide.innerHTML = parentElement.innerHTML
+		let span = document.createElement('span');
+		span.style.fontSize="25px"
+		span.classList.add("rehide");
+		span.innerHTML = "<strong> Hide the spoil again  </strong>"
+		originalPostWithReHide.appendChild(span)
 		/*replace the div of the spoil post with the upper span */
 		parentElement.replaceWith(newElement)
 		/* when the click button is hit on the span, replace the span with the original post*/
@@ -153,7 +156,7 @@ chrome.storage.sync.get('spoiler_list', function(data){
 			event.target.replaceWith(originalPostWithReHide) //replace the 'Oops div with the original post and a span to re-hide
 		})
 		/* hide again the div and put the newElement (spoil span)*/
-		 originalPostWithReHide.addEventListener('click', function(event) {
+		 span.addEventListener('click', function(event) {
 			originalPostWithReHide.replaceWith(newElement);
 		})
 	}
@@ -162,11 +165,11 @@ chrome.storage.sync.get('spoiler_list', function(data){
 
   
   function blockSpoilByKeyWords() {
-	  /* the div class of every facebook post*/
+	   /* the div class of every facebook post*/
      const elementsFB = ['.userContent']
      /* get all divs containing the class .userContent */
-	 const elements = document.querySelectorAll(elementsFB)
-	 /* iterate through the elements that contain text from the spoilersRegex*/
+	   const elements = document.querySelectorAll(elementsFB)
+	   /* iterate through the elements that contain text from the spoilersRegex*/
      elements.forEach(function(element){
 		 checkAndBlock(element)
 	 })
@@ -186,7 +189,7 @@ function blockSpoilByImages(){
 			 //parentElementOfImage.classList.add('checked');
 		//	 alert(imageLink);
 		 })
-	     console.log(element);
+	    // console.log(element);
 	})
 }
 
@@ -195,11 +198,11 @@ function blockSpoilByImages(){
 	   spoilersRegex = new RegExp(spoilers.join('|'),'i') /* creation of incase sensitive regex of the spoilers array */
 	   //find spoiled links
 	   blockEmbeddedLinks();
-	   blockSpoilByImages();
+	   // blockSpoilByImages();
 	   blockSpoilByKeyWords()
 	   /* in order to call the function when scrolling event is happening again*/
 	   window.addEventListener('scroll',blockSpoilByKeyWords)
 	   window.addEventListener('scroll',blockEmbeddedLinks);
-	   window.addEventListener('scroll',blockSpoilByImages);
+	   //window.addEventListener('scroll',blockSpoilByImages);
    }
    
