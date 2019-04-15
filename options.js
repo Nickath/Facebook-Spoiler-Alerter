@@ -10,6 +10,9 @@ function save_options() {
     else{
       let isFirst = (data.spoiler_list == "");
       spoiler_list = data.spoiler_list
+      if(spoiler_list == undefined || spoiler_list.length == 0){
+        spoiler_list = "";
+      }
       var spoiler_list_input = document.getElementById('words');
       var children = spoiler_list_input.children;
       var wordsArray = spoiler_list.split(',');
