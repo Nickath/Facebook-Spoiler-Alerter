@@ -1,7 +1,7 @@
 {
   "name": "Block facebook content",
   "description": "Block unwanted content on facebook",
-  "version": "1",
+  "version": "0.0.1",
   "manifest_version": 2,
   "options_page": "options.html",
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'", 
