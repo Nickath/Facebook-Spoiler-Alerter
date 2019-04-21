@@ -33,7 +33,7 @@ chrome.storage.sync.get('spoiler_list', function(data){
   /* while the element does not include the classname userContentWrapper 
   assign element to parentNode */
   function closest(element, className){
-	  while(element.className != undefined && !element.className.includes(className)){
+	  while(element != undefined && element.className != undefined && !element.className.includes(className)){
 		  element = element.parentNode
 	  }
 	  return element;
@@ -195,7 +195,8 @@ function blockSpoilByImages(){
 
    /*Execute a JavaScript immediately after a page has been loaded: */
    window.onload = function() {
-	   spoilersRegex = new RegExp(spoilers.join('|'),'i') /* creation of incase sensitive regex of the spoilers array */
+	   if(spoilers != '' && spoilers != undefined){
+		   spoilersRegex = new RegExp(spoilers.join('|'),'i') /* creation of incase sensitive regex of the spoilers array */
 	   //find spoiled links
 	   blockEmbeddedLinks();
 	   // blockSpoilByImages();
@@ -204,5 +205,7 @@ function blockSpoilByImages(){
 	   window.addEventListener('scroll',blockSpoilByKeyWords)
 	   window.addEventListener('scroll',blockEmbeddedLinks);
 	   //window.addEventListener('scroll',blockSpoilByImages);
+	   }
+	   
    }
    
